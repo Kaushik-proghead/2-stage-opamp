@@ -1,0 +1,31 @@
+* Two-Stage CMOS Op-Amp (180nm) - Eldo Netlist
+
+************* Include 180nm PDK models *************
+.include "cmosedu_180nm.lib"
+
+************* Power Supply *************
+VDD Vdd 0 1.8
+VINP Vin+ 0 DC 0.9 AC 1
+VINN Vin- 0 DC 0.9
+
+************* Input Differential Pair *************
+M1 Out1 Vin+ Vss Vss nmos L=180n W=10u
+M2 Out1 Vin- Vss Vss nmos L=180n W=10u
+M3 Out1 Vdd Out1 Vdd pmos L=180n W=20u
+M4 Out1 Vdd Out1 Vdd pmos L=180n W=20u
+
+************* Second Stage *************
+M5 Vout Out1 Vss Vss nmos L=180n W=15u
+M6 Vout Vdd Out1 Vdd pmos L=180n W=30u
+
+************* Compensation + Load *************
+Ccomp Out1 Vout 2p
+CL Vout 0 5p
+
+************* Analyses *************
+.op
+.ac dec 10 1 100Meg
+.tran 0 10u 0 10n
+.noise V(Vout) VINP dec 10 1 100Meg
+
+.end
